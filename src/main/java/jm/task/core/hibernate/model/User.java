@@ -1,4 +1,4 @@
-package jm.task.core.jdbc.model;
+package jm.task.core.hibernate.model;
 
 
 import javax.persistence.*;

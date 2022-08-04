@@ -1,8 +1,8 @@
-package jm.task.core.jdbc.dao;
+package jm.task.core.hibernate.dao;
 
-import jm.task.core.jdbc.Main;
-import jm.task.core.jdbc.model.User;
-import jm.task.core.jdbc.util.Util;
+import jm.task.core.hibernate.Main;
+import jm.task.core.hibernate.model.User;
+import jm.task.core.hibernate.util.Util;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

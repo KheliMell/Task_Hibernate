@@ -8,6 +8,13 @@ import java.util.List;
 
 
 public class Main {
+    public static String getDBName() {
+        return "taskpp.users";
+    }
+
+    public static String getURL() {
+        return "jdbc:mysql://localhost:3306/taskpp";
+    }
     public static void main(String[] args) {
         UserService userService = new UserServiceImpl();
 

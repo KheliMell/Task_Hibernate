@@ -1,5 +1,6 @@
 package jm.task.core.jdbc.dao;
 
+import jm.task.core.jdbc.Main;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
@@ -17,7 +18,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = Util.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String sql = "CREATE TABLE " + Util.getDBName() +
+            String sql = "CREATE TABLE " + Main.getDBName() +
                     "(`id` BIGINT(20) NOT NULL AUTO_INCREMENT," +
                     " `name` VARCHAR(45) ," +
                     " `lastName` VARCHAR(45) ," +
@@ -38,7 +39,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = Util.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
 
-            String sql = "DROP TABLE " + Util.getDBName();
+            String sql = "DROP TABLE " + Main.getDBName();
 
             session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
 

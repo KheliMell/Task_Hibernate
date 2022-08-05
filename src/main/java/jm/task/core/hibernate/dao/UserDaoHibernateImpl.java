@@ -13,91 +13,102 @@ public class UserDaoHibernateImpl implements UserDao {
 
     }
 
-    @Override
     public void createUsersTable() {
         try (Session session = Util.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+            try {
+                String sql = "CREATE TABLE " + Main.getDBName() +
+                        "(`id` BIGINT(20) NOT NULL AUTO_INCREMENT," +
+                        " `name` VARCHAR(45) ," +
+                        " `lastName` VARCHAR(45) ," +
+                        " `age` TINYINT(0) UNSIGNED ," +
+                        " PRIMARY KEY (`id`))\n";
 
-            String sql = "CREATE TABLE " + Main.getDBName() +
-                    "(`id` BIGINT(20) NOT NULL AUTO_INCREMENT," +
-                    " `name` VARCHAR(45) ," +
-                    " `lastName` VARCHAR(45) ," +
-                    " `age` TINYINT(0) UNSIGNED ," +
-                    " PRIMARY KEY (`id`))\n";
+                session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
 
-            session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
-
-            transaction.commit();
-            session.close();
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
         } catch (Exception e) {
             System.out.println("Что-то пошло не так! [СОЗДАНИЕ ТАБЛИЦЫ]");
         }
     }
 
-    @Override
     public void dropUsersTable() {
         try (Session session = Util.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+            try {
+                String sql = "DROP TABLE " + Main.getDBName();
 
-            String sql = "DROP TABLE " + Main.getDBName();
+                session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
 
-            session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
-
-            transaction.commit();
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
         } catch (Exception e) {
             System.out.println("Что-то пошло не так! [УДАЛЕНИЕ ТАБЛИЦЫ]");
         }
     }
 
-    @Override
     public void saveUser(String name, String lastName, byte age) {
         try (Session session = Util.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+            try {
+                session.save(new User(name, lastName, age));
 
-            session.save(new User(name, lastName, age));
-
-            transaction.commit();
-            System.out.println("User с именем " + name + " добавлен в базу данных");
+                transaction.commit();
+                System.out.println("User с именем " + name + " добавлен в базу данных");
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
         } catch (Exception e) {
             System.out.println("Что-то пошло не так! [СОХРАНЕНИЕ ПОЛЬЗОВАТЕЛЯ]");
         }
     }
 
-    @Override
     public void removeUserById(long id) {
         try (Session session = Util.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+            try {
+                User user = session.load(User.class, id);
+                session.delete(user);
 
-            User user = session.load(User.class, id);
-            session.delete(user);
-
-            transaction.commit();
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
         } catch (Exception e) {
             System.out.println("Что-то пошло не так! [УДАЛЕНИЕ ПОЛЬЗОВАТЕЛЯ]");
         }
     }
 
-    @Override
     public List<User> getAllUsers() {
         try (Session session = Util.getSessionFactory().openSession()) {
             return session.createQuery("from User", User.class).list();
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Что-то пошло не так! [ПОЛУЧЕНИЕ СПИСКА ПОЛЬЗОВАТЕЛЕЙ]");
             return null;
         }
     }
 
-    @Override
     public void cleanUsersTable() {
         try (Session session = Util.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+            try {
+                session.createQuery("DELETE FROM User").executeUpdate();
 
-            session.createQuery("DELETE FROM User").executeUpdate();
-
-            transaction.commit();
+                transaction.commit();
+            } catch (Exception e) {
+                transaction.rollback();
+                throw e;
+            }
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Что-то пошло не так! [ОТЧИСТКА ТАБЛИЦЫ]");
         }
     }
